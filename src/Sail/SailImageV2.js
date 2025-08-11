@@ -57,6 +57,8 @@ class SailImage extends React.Component {
       col2height: 300,
       divWidth: 300,
       divHeight: 300,
+      containerWidth: props.app.containerRef.current?.offsetWidth || 0,
+      containerHeight: props.app.containerRef.current?.offsetHeight || 0,
       stageX: 0,
       stageY: 0,
       ratio: 1,
@@ -402,7 +404,7 @@ class SailImage extends React.Component {
     }, 16); // ~60fps
 
     const increment = 1.08;
-    const scaleBy = 1.1; // Smaller scale factor for smoother zoom
+    const scaleBy = 1.15; // Smaller scale factor for smoother zoom
     const oldScale = this.stage.scaleX();
     const pointer = this.stage.getPointerPosition();
 
@@ -440,7 +442,7 @@ class SailImage extends React.Component {
       });
 
       // Resize stage canvas to fill screen when zooming in
-      this.resizeStageCanvas(newScale);
+      //this.resizeStageCanvas(newScale);
     }
   }
 
@@ -449,6 +451,9 @@ class SailImage extends React.Component {
       const container = this.myRef.current;
       const containerWidth = container.offsetWidth;
       const containerHeight = container.offsetHeight;
+
+      console.log("containerWidth", containerWidth, "containerHeight", containerHeight);
+      console.log("width", this.props.app.state.containerWidth, "height", this.props.app.state.containerHeight);
 
       // Calculate the scaled content size
       const scaledWidth = this.state.col2width * scale;

@@ -12,6 +12,8 @@ class TrueNorthSASail extends React.Component {
   constructor(props) {
     super(props);
 
+    this.containerRef = React.createRef();
+
     this.state = {
       name: '',
       url: '',
@@ -41,12 +43,20 @@ class TrueNorthSASail extends React.Component {
       Log: '',
       LogData: [],
       comments: "",
+      containerWidth: 0,
+      containerHeight: 0,
     };
 
   }
 
   componentDidMount() {
     this.loadSampleData();
+    this.updateDimensions();
+    window.addEventListener('resize', this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   loadSampleData = () => {
@@ -104,6 +114,18 @@ class TrueNorthSASail extends React.Component {
     // Add your curve editing logic here
   }
 
+  updateDimensions = () => {
+    if (this.containerRef) {
+      const offsetHeight = this.containerRef.clientHeight;
+      const offsetWidth = this.containerRef.clientWidth;
+      console.log("offsetHeight", offsetHeight, "offsetWidth", offsetWidth);
+      this.setState({
+        containerHeight: offsetHeight,
+        containerWidth: offsetWidth,
+      });
+    }
+  };
+
   render() {
 
     const { url, imageLoading } = this.state;
@@ -145,10 +167,12 @@ class TrueNorthSASail extends React.Component {
       <div style={{ height: '100%' }}>
 
         <Grid
+          ref={node => { this.containerRef = node; }}
+          height="100%"
           style={{ padding: '5px 5px 5px 5px' }}
           container>
 
-          <Grid item xs={12} sm={12} md={7} lg={7} style={{ padding: '5px 5px 5px 5px', maxHeight: "92vh" }} ref={this.imageGrid}>
+          <Grid item xs={12} sm={12} md={7} lg={7} style={{ padding: '5px 5px 5px 5px' }} ref={this.imageGrid}>
             {img}
           </Grid>
 
