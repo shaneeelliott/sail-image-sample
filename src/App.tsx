@@ -111,7 +111,7 @@ export function App() {
 
   // Show main application
   return (
-    <div style={{ height: '95vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Control buttons */}
       <div style={{ padding: '10px', borderBottom: '1px solid #ccc', backgroundColor: '#f5f5f5' }}>
         <button onClick={handleNewCurveClick} style={{ margin: '0 5px', padding: '8px 16px' }}>

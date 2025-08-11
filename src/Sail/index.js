@@ -150,14 +150,14 @@ class TrueNorthSASail extends React.Component {
     );
 
     return (
-      <div style={{ height: '100%', minHeight: "100vh" }}>
+      <div style={{ height: '100%' }}>
         {app_bar}
 
         <Grid
           style={{ padding: '5px 5px 5px 5px' }}
           container>
 
-          <Grid item xs={12} sm={12} md={7} lg={7} style={{ padding: '5px 5px 5px 5px' }} ref={this.imageGrid}>
+          <Grid item xs={12} sm={12} md={7} lg={7} style={{ padding: '5px 5px 5px 5px', maxHeight: "92vh" }} ref={this.imageGrid}>
             {img}
           </Grid>
 

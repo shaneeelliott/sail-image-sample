@@ -367,7 +367,8 @@ class SailImage extends React.Component {
       this.wheelTimeout = null;
     }, 16); // ~60fps
 
-    const scaleBy = 1.08; // Smaller scale factor for smoother zoom
+    const increment = 1.08;
+    const scaleBy = 1.1; // Smaller scale factor for smoother zoom
     const oldScale = this.stage.scaleX();
     const pointer = this.stage.getPointerPosition();
 
@@ -381,11 +382,11 @@ class SailImage extends React.Component {
     const direction = e.evt.deltaY > 0 ? -1 : 1;
     const newScale = Math.max(0.1, oldScale * Math.pow(scaleBy, direction));
 
+    console.log("oldScale", oldScale, "newScale", newScale);
+
     if (newScale > 1) {
       // Apply scale
       this.stage.scale({ x: newScale, y: newScale });
-
-      console.log(this.stage.width(), this.stage.height(), this.stage.x(), this.stage.y(), this.stage.scaleX(), this.stage.scaleY());
 
       // Calculate new position to keep mouse point in same place
       const newPos = {
@@ -403,6 +404,28 @@ class SailImage extends React.Component {
         Xmin: this.getWidth() - (this.getWidth() * newScale),
         Ymin: this.getHeight() - (this.getHeight() * newScale)
       });
+
+      // Resize stage canvas to fill screen when zooming in
+      this.resizeStageCanvas(newScale);
+    }
+  }
+
+  resizeStageCanvas = (scale) => {
+    if (this.myRef.current && this.stage) {
+      const container = this.myRef.current;
+      const containerWidth = container.offsetWidth;
+      const containerHeight = container.offsetHeight;
+
+      // Calculate the scaled content size
+      const scaledWidth = this.state.col2width * scale;
+      const scaledHeight = this.state.col2height * scale;
+
+      // Set stage size to the larger of container size or scaled content size
+      const newWidth = Math.max(containerWidth, scaledWidth);
+      const newHeight = Math.max(containerHeight, scaledHeight);
+
+      this.stage.width(newWidth);
+      this.stage.height(newHeight);
     }
   }
 
@@ -479,6 +502,13 @@ class SailImage extends React.Component {
 
   resetView = () => {
     this.stage.scale({ x: 1, y: 1 });
+
+    // Reset stage canvas size to original size
+    if (this.stage) {
+      this.stage.width(this.state.col2width);
+      this.stage.height(this.state.col2height);
+    }
+
     this.setState({
       stageX: 0,
       stageY: 0,
@@ -645,7 +675,11 @@ class SailImage extends React.Component {
           height: "100%",
           position: "relative",
           overflow: "hidden",
-          touchAction: "none"
+          touchAction: "none",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          MozUserSelect: "none",
+          msUserSelect: "none"
         }}
         onWheel={this.handleWheel}
       >
