@@ -1,0 +1,32 @@
+{
+    "name": "sail-image-sample",
+    "private": true,
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.11.4",
+        "@emotion/styled": "^11.11.0",
+        "@mui/material": "^5.15.0",
+        "@mui/icons-material": "^5.15.0",
+        "exif-js": "^2.3.0",
+        "konva": "^9.3.22",
+        "mathjs": "^14.0.0",
+        "natural-spline-interpolator": "^1.0.2",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-konva": "^18.2.10",
+        "react-spinners": "^0.17.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.3.12",
+        "@types/react-dom": "^18.3.1",
+        "@vitejs/plugin-react": "^5.0.0",
+        "typescript": "^5.5.3",
+        "vite": "^5.4.19"
+    }
+}
