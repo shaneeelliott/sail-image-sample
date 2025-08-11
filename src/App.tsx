@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { SailImageV2Wrapper, SailImageV2WrapperRef } from '../../sail-image-ts/src/sail-image/SailImageV2Wrapper';
+import SailImageV2 from './Sail/SailImageV2';
 
 export function App() {
   const [img, setImg] = useState<string | null>(null);
@@ -12,7 +12,7 @@ export function App() {
   const [imageSRC, setImageSRC] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const sailImageRef = useRef<SailImageV2WrapperRef>(null);
+  const sailImageRef = useRef<any>(null);
 
   useEffect(() => {
     console.log('App component mounted');
@@ -136,67 +136,10 @@ export function App() {
 
       {/* SailImage component */}
       <div style={{ flex: 1, position: 'relative' }}>
-        <SailImageV2Wrapper
+        <SailImageV2
           ref={sailImageRef}
-          imageSrc={img || undefined}
-          imageData={data}
-          onImageLoad={(image: HTMLImageElement) => {
-            console.log('Image loaded:', image);
-          }}
-          onDataLoad={(data: any) => {
-            console.log('Data loaded:', data);
-          }}
-          onStateChange={(newState: any) => {
-            console.log('State changed:', newState);
-          }}
-          onCurveChange={(newCurves: any[]) => {
-            setCurves(newCurves);
-            console.log('Curves changed:', newCurves);
-          }}
-          onLineChange={(newLines: any[]) => {
-            setLines(newLines);
-            console.log('Lines changed:', newLines);
-          }}
-          onCentrelineChange={(newCentreline: any, newTwist: number) => {
-            setCentreline(newCentreline);
-            setCentrelineTwist(newTwist);
-            console.log('Centreline changed:', newCentreline, newTwist);
-          }}
-          onImageInfoChange={(newInfo: any) => {
-            console.log('Image info changed:', newInfo);
-          }}
-          onCommentsChange={(newComments: string) => {
-            console.log('Comments changed:', newComments);
-          }}
-          onLogDataChange={(newLogData: any[]) => {
-            console.log('Log data changed:', newLogData);
-          }}
-          onImageTimeChange={(newTime: string) => {
-            console.log('Image time changed:', newTime);
-          }}
-          onSailChange={(newSail: string, newSailType: number) => {
-            console.log('Sail changed:', newSail, newSailType);
-          }}
-          onSavedChange={(newSaved: boolean) => {
-            setSaved(newSaved);
-            console.log('Saved changed:', newSaved);
-          }}
-          onSelectedCurveChange={(newCurve: any) => {
-            console.log('Selected curve changed:', newCurve);
-          }}
-          onSelectedLineChange={(newLine: any) => {
-            console.log('Selected line changed:', newLine);
-          }}
-          onIsCentrelineChange={(newIsCentreline: boolean) => {
-            console.log('Is centreline changed:', newIsCentreline);
-          }}
-          onNewImageChange={(newNewImage: boolean) => {
-            console.log('New image changed:', newNewImage);
-          }}
-          onImageSRCChange={(newSrc: string) => {
-            setImageSRC(newSrc);
-            console.log('Image SRC changed:', newSrc);
-          }}
+          image={img}
+          data={data}
         />
       </div>
     </div>

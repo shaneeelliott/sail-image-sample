@@ -5,7 +5,6 @@ import CurveInfo from '../Curves/CurveInfo';
 import Grid from '@mui/material/Grid';
 import ImageData from './ImageData';
 import LogData from './LogData';
-import AppBar from '../UI/AppBar';
 
 // Sample data will be loaded via fetch
 
@@ -142,16 +141,8 @@ class TrueNorthSASail extends React.Component {
       );
     }
 
-    let app_bar = (
-      <AppBar
-        projectName={"TrueNorth Sail Analysis"}
-        app={this}>
-      </AppBar>
-    );
-
     return (
       <div style={{ height: '100%' }}>
-        {app_bar}
 
         <Grid
           style={{ padding: '5px 5px 5px 5px' }}

@@ -6,6 +6,7 @@ import CentreLine from '../Curves/CenterLine';
 import Curve from '../Curves/Curve';
 import NewLine from '../Curves/Line';
 import MySpinner from "../Project/MySpinner"
+import StripeDialog from '../components/StripeDialog';
 import * as EXIF from 'exif-js';
 let pointkey = 1;
 let curvekey = 1;
@@ -85,6 +86,8 @@ class SailImage extends React.Component {
       scale: 1,
       loading: true,
       editing: false,
+      stripeDialogOpen: false,
+      pendingCurveData: null,
     }
 
     // Initialize wheel timeout for throttling
@@ -320,13 +323,31 @@ class SailImage extends React.Component {
   }
 
   saveCurve = (curveData) => {
-    let curves = [...this.state.curves];
-    curves.push(curveData);
-    this.setState({
-      curves: curves,
-      selectedCurve: null,
-      editing: false
-    });
+    // If curveData is a string (stripe name), use it to name the curve
+    if (typeof curveData === 'string') {
+      // Get the actual curve data from the pending curve
+      const actualCurveData = this.state.pendingCurveData;
+      if (actualCurveData) {
+        actualCurveData.name = curveData;
+        let curves = [...this.state.curves];
+        curves.push(actualCurveData);
+        this.setState({
+          curves: curves,
+          selectedCurve: null,
+          editing: false,
+          pendingCurveData: null
+        });
+        this.props.app.setState({
+          curves: curves,
+        });
+      }
+    } else {
+      // Show stripe dialog to get the stripe name
+      this.setState({
+        stripeDialogOpen: true,
+        pendingCurveData: curveData
+      });
+    }
   }
 
   saveLine = (lineData) => {
@@ -344,6 +365,9 @@ class SailImage extends React.Component {
       selectedCurve: null,
       editing: false
     });
+    this.props.app.setState({
+      curves: this.state.curves,
+    });
   }
 
   cancelLineEdit = () => {
@@ -351,6 +375,16 @@ class SailImage extends React.Component {
       selectedLine: null,
       editing: false
     });
+  }
+
+  handleStripeDialogClose = (stripeName) => {
+    this.setState({
+      stripeDialogOpen: false
+    });
+
+    if (stripeName) {
+      this.saveCurve(stripeName);
+    }
   }
 
 
@@ -661,11 +695,20 @@ class SailImage extends React.Component {
               cursor: 'pointer'
             }}
           >
-            Cancel
+            Delete
           </button>
         </div>
       );
     }
+
+    const stripeDialog = (
+      <StripeDialog
+        open={this.state.stripeDialogOpen}
+        onClose={this.handleStripeDialogClose}
+        sailImage={this}
+        app={this}
+      />
+    );
 
     return (
 
@@ -686,6 +729,7 @@ class SailImage extends React.Component {
         {spinner}
         {stage}
         {editButtons}
+        {stripeDialog}
       </div>
 
     );

@@ -8,8 +8,20 @@ declare module './Comments' {
     export default Comments;
 }
 
-declare module './SailImageV2' {
-    const SailImageV2: any;
+declare module './Sail/SailImageV2' {
+    import { Component } from 'react';
+
+    interface SailImageV2Props {
+        image?: string | null;
+        data?: any;
+    }
+
+    class SailImageV2 extends Component<SailImageV2Props> {
+        newCurveClick: (event: any) => void;
+        newLineClick: (centreline: boolean) => void;
+        flipImage: (event: any) => void;
+    }
+
     export default SailImageV2;
 }
 
