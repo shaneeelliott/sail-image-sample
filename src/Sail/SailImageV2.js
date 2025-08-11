@@ -87,6 +87,9 @@ class SailImage extends React.Component {
       editing: false,
     }
 
+    // Initialize wheel timeout for throttling
+    this.wheelTimeout = null;
+
   }
 
   getWidth() {
@@ -117,6 +120,12 @@ class SailImage extends React.Component {
     // Remove wheel event listener
     if (this.myRef.current) {
       this.myRef.current.removeEventListener('wheel', this.handleWheel);
+    }
+
+    // Clear wheel timeout
+    if (this.wheelTimeout) {
+      clearTimeout(this.wheelTimeout);
+      this.wheelTimeout = null;
     }
   }
 
@@ -348,41 +357,53 @@ class SailImage extends React.Component {
 
   wheelHandler = (e) => {
     e.evt.preventDefault();
-    const scaleBy = 1.05;
-    let oldScale = this.stage.scaleX();
 
-    let mousePointTo = {
-      x: this.stage.getPointerPosition().x / oldScale - this.stage.x() / oldScale,
-      y: this.stage.getPointerPosition().y / oldScale - this.stage.y() / oldScale
-    };
-
-    let newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-    if (newScale > 1) {
-      this.stage.scale({ x: newScale, y: newScale });
-    } else {
-      this.stage.scale({ x: 1, y: 1 });
+    // Throttle wheel events to improve performance
+    if (this.wheelTimeout) {
+      return;
     }
 
+    this.wheelTimeout = setTimeout(() => {
+      this.wheelTimeout = null;
+    }, 16); // ~60fps
 
-    let xc = this.stage.x();
-    let yc = this.stage.y();
-    let Xmin = this.getWidth() - (this.getWidth() * this.stage.scaleX());
-    let Ymin = this.getHeight() - (this.getHeight() * this.stage.scaleX());
+    const scaleBy = 1.08; // Smaller scale factor for smoother zoom
+    const oldScale = this.stage.scaleX();
+    const pointer = this.stage.getPointerPosition();
 
-    let newPos = {
-      x:
-        -(mousePointTo.x - this.stage.getPointerPosition().x / newScale) *
-        newScale,
-      y:
-        -(mousePointTo.y - this.stage.getPointerPosition().y / newScale) *
-        newScale
+    // Calculate the point under mouse before scaling
+    const mousePointTo = {
+      x: (pointer.x - this.stage.x()) / oldScale,
+      y: (pointer.y - this.stage.y()) / oldScale
     };
 
-    let x = this.findXmin(newPos);
-    let y = this.findYmin(newPos);
+    // Calculate new scale
+    const direction = e.evt.deltaY > 0 ? -1 : 1;
+    const newScale = Math.max(0.1, oldScale * Math.pow(scaleBy, direction));
 
-    this.setState({ stageX: x, stageY: y, Xmin: Xmin, Ymin: Ymin });
+    if (newScale > 1) {
+      // Apply scale
+      this.stage.scale({ x: newScale, y: newScale });
 
+      console.log(this.stage.width(), this.stage.height(), this.stage.x(), this.stage.y(), this.stage.scaleX(), this.stage.scaleY());
+
+      // Calculate new position to keep mouse point in same place
+      const newPos = {
+        x: pointer.x - mousePointTo.x * newScale,
+        y: pointer.y - mousePointTo.y * newScale
+      };
+
+      // Update stage position directly
+      this.stage.position(newPos);
+
+      // Update state
+      this.setState({
+        stageX: newPos.x,
+        stageY: newPos.y,
+        Xmin: this.getWidth() - (this.getWidth() * newScale),
+        Ymin: this.getHeight() - (this.getHeight() * newScale)
+      });
+    }
   }
 
 
@@ -408,6 +429,7 @@ class SailImage extends React.Component {
       width = this.myRef.current.offsetWidth;
       //}
 
+      console.log(width, height);
 
       this.setState({
         col2width: width,
