@@ -7,6 +7,7 @@ import Curve from '../Curves/Curve';
 import NewLine from '../Curves/Line';
 import MySpinner from "../Project/MySpinner"
 import StripeDialog from '../components/StripeDialog';
+import { getCurveData } from '../Curves/Curve';
 import * as EXIF from 'exif-js';
 let pointkey = 1;
 let curvekey = 1;
@@ -50,6 +51,7 @@ class SailImage extends React.Component {
     this.myImage = React.createRef();
     this.curvesLayer = React.createRef();
     this.pointsLayer = React.createRef();
+    this.img = React.createRef();
 
     this.state = {
       username: 'Shano',
@@ -169,6 +171,7 @@ class SailImage extends React.Component {
         centreline: data.centreline,
         centrelineTwist: data.centrelineTwist,
       });
+
       this.props.app.loginforef.setState({ data: data.LogData });
       this.myspinner.handleClose();
       callback();
@@ -197,7 +200,7 @@ class SailImage extends React.Component {
       //if(divAspect <= imageAspect){
       //   height = this.myRef.current.offsetHeight;
       //   width =  this.myRef.current.offsetHeight / imageAspect;
-      //}else{
+      //}else{Curve
       height = this.myRef.current.offsetWidth * imageAspect;
       width = this.myRef.current.offsetWidth;
       //}
@@ -213,6 +216,14 @@ class SailImage extends React.Component {
       let scaleX = data.imageSize.scaleX ? data.imageSize.scaleX : 1;
       console.log(scaleX);
 
+      let curves = [];
+      for (let i = 0; i < data.curves.length; i++) {
+        let c = getCurveData(data.curves[i].controlPoints, false, true, data.centrelineTwist);
+        c.name = data.curves[i].name;
+        c.key = data.curves[i].key;
+        curves.push(c);
+      }
+
       this.setState({
         image: image,
         ratio: imageAspect,
@@ -223,7 +234,7 @@ class SailImage extends React.Component {
         col2height: height,
         divWidth: this.myRef.current.offsetWidth,
         divHeight: this.myRef.current.offsetHeight,
-        curves: data.curves,
+        curves: curves,
         lines: data.lines,
         centreline: data.centreline,
         centrelineTwist: data.centrelineTwist,
@@ -417,8 +428,6 @@ class SailImage extends React.Component {
     // Calculate new scale
     const direction = e.evt.deltaY > 0 ? -1 : 1;
     const newScale = Math.max(0.1, oldScale * Math.pow(scaleBy, direction));
-
-    console.log("oldScale", oldScale, "newScale", newScale);
 
     if (newScale > 1) {
       // Apply scale

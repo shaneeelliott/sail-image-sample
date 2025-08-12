@@ -49,10 +49,14 @@ class SavedCurve extends React.Component {
     {
       this.props.data.map((curve, index) => {
 
+        if (curve.pnts && curve.pnts.length === 0) {
+          return;
+        }
+
         let luffPoint = curve.controlPoints[0];
         let leechPoint = curve.controlPoints[(curve.controlPoints.length - 1)];
         let draftPoint = curve.draftPoint;
-        let points = this.filterArray(curve.pnts);
+        //let points = this.filterArray(curve.pnts);
 
         let selectLine;
 
