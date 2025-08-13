@@ -1,5 +1,4 @@
 {
-  "folder": "C:\\Users\\shane\\Documents/Phoenix 11/J15-17/Phoenix 11 J15-17 WhatsApp Image 2024-07-20 at 16.21.02 (1)",
   "imagePath": "C:\\Users\\shane\\Documents/Phoenix 11/J15-17/Phoenix 11 J15-17 WhatsApp Image 2024-07-20 at 16.21.02 (1)/WhatsApp Image 2024-07-20 at 16.21.02 (1).jpeg",
   "sail": "J15-17",
   "sailType": 1,
@@ -244,11 +243,20 @@
     }
   ],
   "Log": "",
-  "LogData": [],
-  "comments": "",
-  "projectName": "Phoenix 11",
-  "dropboxLink": false,
-  "dropboxInfo": [],
-  "user": [],
-  "synced": false
+  "LogData": [
+    {
+      "name": "TWS",
+      "value": "10"
+    },
+    {
+      "name": "Forestay",
+      "value": "12.6"
+    },
+    {
+      "name": "Rake",
+      "value": "4.10"
+    }
+  ],
+  "comments": "Valencia Training",
+  "projectName": "Phoenix 11"
 }
